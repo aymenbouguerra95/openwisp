@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openwisp-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openwisp-server
+  template:
+    metadata:
+      labels:
+        app: openwisp-server
+    spec:
+      containers:
+      - name: server
+        image: aymenbouguerra/openwisp-ipam-server:latest
+        ports:
+        - containerPort: 8000

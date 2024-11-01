@@ -1,12 +1,20 @@
 import os
 import sys
+from pathlib import Path
 
+# BASE_DIR setup
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Secret key and debug settings
 SECRET_KEY = '7&cb7ybp)-z@f5ow8jryz=0*b!@4ma%e#bl2$z!+_g!i3*8=k_'
 DEBUG = True
 TESTING = sys.argv[1] == 'test'
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '[::1]']
+CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:*/"]
 
+CORS_ALLOW_ALL_ORIGINS = True
+
+# Installed applications
 INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -14,24 +22,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'openwisp_users.accounts',
-    # all-auth
     'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    # Other dependencies
     'reversion',
-    # openwisp2 modules
     'openwisp_users',
     'openwisp_ipam',
-    # admin
     'openwisp_utils.admin_theme',
     'django.contrib.admin',
     'admin_auto_filters',
-    # rest framework
     'rest_framework',
     'rest_framework.authtoken',
-    # Only for developement
     'django_extensions',
     'drf_yasg',
 ]
@@ -45,6 +47,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -77,14 +80,24 @@ TEMPLATES = [
     },
 ]
 
-DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': 'db.sqlite3'}}
+# Database configuration
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'openwisp',
+        'USER': 'openwispuser',
+        'PASSWORD': 'openwisp_password',
+        'HOST': 'db',
+        'PORT': '5432',
+    }
+}
 
 LANGUAGE_CODE = 'en'
-TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 STATIC_URL = '/static/'
+STATIC_ROOT = '/app/static/'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 OPENWISP_USERS_AUTH_API = True
 
@@ -93,29 +106,10 @@ CELERY_BROKER_URL = 'memory://'
 if TESTING:
     OPENWISP_ORGANIZATION_USER_ADMIN = True
     OPENWISP_ORGANIZATION_OWNER_ADMIN = True
-
     CELERY_TASK_ALWAYS_EAGER = True
     CELERY_TASK_EAGER_PROPAGATES = True
 
-if os.environ.get('SAMPLE_APP', False):
-    ipam_index = INSTALLED_APPS.index('openwisp_ipam')
-    INSTALLED_APPS.remove('openwisp_ipam')
-    INSTALLED_APPS.insert(ipam_index, 'openwisp2.sample_ipam')
-    # Replace Openwisp_Users
-    users_index = INSTALLED_APPS.index('openwisp_users')
-    INSTALLED_APPS.remove('openwisp_users')
-    INSTALLED_APPS.insert(users_index, 'openwisp2.sample_users')
-    EXTENDED_APPS = ['openwisp_ipam', 'openwisp_users']
-    OPENWISP_IPAM_IPADDRESS_MODEL = 'sample_ipam.IpAddress'
-    OPENWISP_IPAM_SUBNET_MODEL = 'sample_ipam.Subnet'
-    # Swapper
-    AUTH_USER_MODEL = 'sample_users.User'
-    OPENWISP_USERS_GROUP_MODEL = 'sample_users.Group'
-    OPENWISP_USERS_ORGANIZATION_MODEL = 'sample_users.Organization'
-    OPENWISP_USERS_ORGANIZATIONUSER_MODEL = 'sample_users.OrganizationUser'
-    OPENWISP_USERS_ORGANIZATIONOWNER_MODEL = 'sample_users.OrganizationOwner'
-
-# local settings must be imported before test runner otherwise they'll be ignored
+# Local settings import
 try:
     from openwisp2.local_settings import *
 except ImportError:

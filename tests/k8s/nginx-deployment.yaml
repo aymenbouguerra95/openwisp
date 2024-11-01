@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openwisp-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openwisp-nginx
+  template:
+    metadata:
+      labels:
+        app: openwisp-nginx
+    spec:
+      containers:
+      - name: nginx
+        image: aymenbouguerra/openwisp-ipam-nginx:latest
+        ports:
+        - containerPort: 80

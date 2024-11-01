@@ -91,7 +91,7 @@ Install (and add to the requirements of your project) the
 
 .. code-block::
 
-    pip install openwisp-ipam
+    
 
 3. Add ``EXTENDED_APPS``
 ------------------------

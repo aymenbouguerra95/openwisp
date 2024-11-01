@@ -2,6 +2,7 @@ import csv
 from collections import OrderedDict
 from copy import deepcopy
 
+
 import swapper
 from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _

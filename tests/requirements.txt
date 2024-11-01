@@ -1,6 +1,9 @@
+--prefer-binary
 openwisp-users @ https://github.com/openwisp/openwisp-users/tarball/master
 openwisp-utils[rest] @ https://github.com/openwisp/openwisp-utils/tarball/master
-django-reversion~=5.0.12
+django-reversion~=5.1.0
 openpyxl~=3.1.5
-hvac
+psycopg2-binary
+dj-database-url
+gunicorn==23.0.0
 openwisp-monitoring @ https://github.com/openwisp/openwisp-monitoring/tarball/master

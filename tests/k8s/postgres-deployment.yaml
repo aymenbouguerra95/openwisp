@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openwisp-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openwisp-db
+  template:
+    metadata:
+      labels:
+        app: openwisp-db
+    spec:
+      containers:
+      - name: db
+        image: aymenbouguerra/openwisp-ipam-db:latest
+        ports:
+        - containerPort: 5432

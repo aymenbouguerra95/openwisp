@@ -1,8 +1,8 @@
+from django.http import HttpResponse
 from django.urls import include, path
 
 from .api import views as ipam_api_views
 from .api.urls import get_api_urls
-
 
 def get_urls(api_views):
     """
@@ -17,5 +17,12 @@ def get_urls(api_views):
         path('accounts/', include('openwisp_users.accounts.urls')),
     ]
 
+# Adding a home view for the root URL
+def home(request):
+    return HttpResponse("Welcome to OpenWISP IPAM")
 
-urlpatterns = [path('', include(get_urls(ipam_api_views)))]
+# Include the home view in the urlpatterns
+urlpatterns = [
+    path('', home, name='home'),  # Root URL view
+    path('', include(get_urls(ipam_api_views))),
+]
